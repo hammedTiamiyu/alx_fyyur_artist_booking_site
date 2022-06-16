@@ -1,0 +1,108 @@
+<!-- {% extends 'layouts/main.html' %}
+{% block title %}Fyyur{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-6">
+		<h1>Fyyur 🔥</h1>
+		<p class="lead">Where musical artists meet musical venues.</p>
+		<h3>
+			<a href="/venues"><button class="btn btn-primary btn-lg">Find a venue</button></a>
+			<a href="/venues/create"><button class="btn btn-default btn-lg">Post a venue</button></a>
+		</h3>
+		<h3>
+			<a href="/artists"><button class="btn btn-primary btn-lg">Find an artist</button></a>
+			<a href="/artists/create"><button class="btn btn-default btn-lg">Post an artist</button></a>
+		</h3>
+		<p class="lead">Publicize about your show for free.</p>
+		<h3>
+			<a href="/shows/create"><button class="btn btn-default btn-lg">Post a show</button></a>
+		</h3>
+	</div>
+	<div class="col-sm-6 hidden-sm hidden-xs">
+		<img id="front-splash" src="{{ url_for('static',filename='img/front-splash.jpg') }}" alt="Front Photo of Musical Band" />
+	</div>
+</div>
+{% endblock %} -->
+
+<html>
+  <head>
+    <title>Todo App</title>
+  </head>
+  <style>
+    ul {
+    list-style: none;
+    padding:0;
+    margin: 0;
+}
+  </style>
+  <body>
+    <form id="form">
+      <input type="text" name="description" id="description" />
+      <input type="submit" value="Create" />
+    </form>
+    <div class = "hidden" id = "error" style="display:none;"> Something went wrong! </div>
+    <ul id="todo">
+      {% for d in data %}
+      <li> <input type = "checkbox" data-id='{{d.id}}' class="check-completed"
+        {% if d.completed %} checked {% endif %} /> {{d.description }}
+      </li>
+      {% endfor %}
+    </ul> 
+
+    <script>
+      const checkboxes = document.querySelectorAll('.check-completed')
+      for (let i = 0 ; i < checkboxes.length ; i++) {
+      const checkbox = checkboxes[i];
+      checkbox.onchange = function(e) {
+     console.log('event',e);
+     const newCompleted = e.target.checked;
+     const todoId = e.target.dataset['id'];
+     console.log(todoId);
+     fetch ('/todos/' + todoId + '/set-completed', {
+        method: 'POST',
+        body:JSON.stringify( { 'completed' : newCompleted 
+    }),
+        headers:  {
+             'Content-Type': 'application/json'
+              }
+    })
+    .then(function() {
+      document.getElementById('error').classname='hidden'; 
+    })
+    .catch(function() {
+      document.getElementById('error').className = '';
+    })
+  }
+}
+
+     document.getElementById('form').onsubmit = function(e) {
+      e.preventDefault();
+      fetch('/todos/create', {
+              method: 'POST',
+              body: JSON.stringify({'description':document.getElementById('description').value
+                   }),
+               headers: {
+                        'Content-Type': 'application/json'
+                       }
+    })
+    .then(function(response) { 
+         return response.json();
+    })
+    .then(function(jsonresponse) {
+      const liItem = document.createElement('LI');
+           
+         liItem.innerHTML = jsonresponse['description'];
+         console.log(jsonresponse);         
+        //  alert(jsonresponse);
+         document.getElementById('todo').appendChild(liItem);
+         document.getElementById('error').classname='hidden'; 
+         document.getElementById('description').value = ''
+    })
+    .catch(function() {
+      document.getElementById('error').className = '';
+    })
+  }
+    </script>
+
+  </body>
+</html>
