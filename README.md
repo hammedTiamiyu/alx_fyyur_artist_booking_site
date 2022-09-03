@@ -173,7 +173,8 @@ pip install -r requirements.txt
 
 5. **Run the development server:**
 ```
-<!-- export FLASK_APP=myapp
+<!-- 
+export FLASK_APP=myapp
 export FLASK_ENV=development # enables debug mode
 export FLASK_DEBUG=true
 export SQLALCHEMY_DATABASE_URI=postgresql://postgres:codingly#22@host:5432/postgres
