@@ -128,8 +128,6 @@ def show_venue(venue_id):
     response['seeking_description'] = venue.seeking_description
     response['image_link'] = venue.image_link
     
-    # artist = venue.performing_artist
-    # # print("ARTISTSS:", artist)
     past_shows_data = db.session.query(Show).join(Venue).filter(Show.venue_id==venue_id).filter(Show.start_time<datetime.now()).all()
 
     for row in past_shows_data:
